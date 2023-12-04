@@ -1,0 +1,61 @@
+import time
+
+def count(money,arr):
+    if money==0:
+        return 0
+    minSum = 99999
+    for i in arr:
+        if money-i>=0:
+            var = count(money-i,arr)
+            if var < minSum:
+                minSum = var
+    return minSum+1
+
+def countWithDP(money,arr,dp):
+
+    if money==0:
+        return 0
+   
+    ans = 99999   
+    for i in range(len(arr)):
+        if money-arr[i]>=0:
+            subans = 0
+            if dp[money-arr[i]]!=-1:
+                subans = dp[money-arr[i]]
+            else:
+                subans = countWithDP(money-arr[i],arr,dp)
+            if subans!=99999 and subans +1 < ans :
+                ans = subans +1
+    dp[money]=ans
+    return dp[money]
+    
+def countWithDP2(money, arr):
+    dp = [99999] * (money + 1)
+    dp[0] = 0
+
+    for i in range(1, money + 1):
+        for coin in arr:
+            if i - coin >= 0:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+
+    return dp[money] if dp[money] != 99999 else -1
+
+if __name__=='__main__':
+
+    start = time.time()
+    total = 1000
+    dp = [-1 for i in range(total+1)]
+    dp[0]=0
+    currency_array  = [7,5,1]
+
+
+    print(countWithDP(total,currency_array,dp))
+    print(time.time()- start)
+
+
+
+    start = time.time()
+
+    print(countWithDP2(total, currency_array))
+    print(time.time()- start)
+
